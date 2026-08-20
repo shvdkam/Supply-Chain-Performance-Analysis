@@ -204,11 +204,11 @@ Overall, the dashboards help connect financial performance with operational effi
 
 ### Executive Overview
 
-_Add dashboard screenshot here._
+![Executive Overview Dashboard](executive-overview.png)
 
 ### Delivery & Operations Performance
 
-_Add dashboard screenshot here._
+![Delivery and Operations Dashboard](delivery-operations.png)
 
 ---
 
