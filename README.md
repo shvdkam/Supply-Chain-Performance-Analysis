@@ -74,7 +74,7 @@ The dashboard can be filtered by **Year, Market, and Shipping Mode**.
 
 The complete Tableau workbook is included in this repository.
 
-**File:** [`Supply-Chain-Performance-Analysis.twbx`](Supply-Chain-Performance-Analysis.twbx)
+**File:** [Supply Chain Performance Analysis.twbx](Supply%20Chain%20Performance%20Analysis.twbx)
 
 Download and open the workbook in Tableau to explore the complete project, including dashboards, interactive filters, calculated fields, and individual worksheets.
 
@@ -386,10 +386,9 @@ This project demonstrates my ability to:
 Supply-Chain-Performance-Analysis/
 │
 ├── README.md
-├── Supply-Chain-Performance-Analysis.twbx
+├── Supply Chain Performance Analysis.twbx
 ├── executive-overview.png
 └── delivery-operations.png
-```
 
 ---
 
