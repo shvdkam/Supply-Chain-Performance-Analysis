@@ -2,6 +2,8 @@
 
 In this project I looked at a supply chain dataset from two sides: money (sales, profit, markets, categories) and delivery (how many orders arrive on time and what affects it). I built two Tableau dashboards and wrote down what I found and what I would recommend to the company.
 
+**Interactive dashboards on Tableau Public:** [Supply Chain Performance Analysis](https://public.tableau.com/app/profile/margarita.shved/viz/SupplyChainPerformanceAnalysis_17872519682360/ExecutiveOverview)
+
 ## Data
 
 Dataset: DataCo Smart Supply Chain for Big Data Analysis, downloaded from Kaggle. Original source: Constante, F., Silva, F., Pereira, A. (2019), Mendeley Data, https://doi.org/10.17632/8gx2fvg2k6.5 (licence CC BY 4.0).
@@ -10,7 +12,7 @@ I used orders from 2015 to 2017, so every year in the analysis is a full year an
 
 The dataset doesn't say which currency it uses. Most analyses of it treat the amounts as US dollars, so I do the same here.
 
-The Tableau workbook is in this repo: [Supply Chain Performance Analysis_.twbx](Supply%20Chain%20Performance%20Analysis_.twbx). Download it and open it in Tableau Public or Tableau Desktop to use the filters and see the calculated fields.
+The Tableau workbook is also in this repo: [Supply Chain Performance Analysis_.twbx](Supply%20Chain%20Performance%20Analysis_.twbx). Download it and open it in Tableau Public or Tableau Desktop to use the filters and see the calculated fields.
 
 ## Dashboard 1: Executive Overview
 
@@ -81,19 +83,4 @@ SUM([Sales]) / COUNTD([Order Id])
 (SUM([Sales]) - LOOKUP(SUM([Sales]), -1)) / ABS(LOOKUP(SUM([Sales]), -1))
 
 // Category Performance (10.8% is the overall margin)
-IF [Profit Margin] >= 0.108 THEN "Above Avg Margin" ELSE "Below Avg Margin" END
-```
-
-## Tools
-
-Tableau: calculated fields, table calculations (LOOKUP for YoY), interactive filters, dashboard layout.
-
-## Files
-
-```
-Supply-Chain-Performance-Analysis/
-├── README.md
-├── Supply Chain Performance Analysis_.twbx
-├── executive overview.png
-└── delivery-operations.png
-```
+IF
