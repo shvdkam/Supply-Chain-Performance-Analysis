@@ -8,7 +8,7 @@ In this project I looked at a supply chain dataset from two sides: money (sales,
 
 Dataset: DataCo Smart Supply Chain for Big Data Analysis, downloaded from Kaggle. Original source: Constante, F., Silva, F., Pereira, A. (2019), Mendeley Data, https://doi.org/10.17632/8gx2fvg2k6.5 (licence CC BY 4.0).
 
-I used orders from 2015 to 2017, so every year in the analysis is a full year and the YoY growth compares 2017 with 2016.
+I loaded the data into Tableau from an Excel file and used orders from 2015 to 2017 (orders from 2018 are not included), so the YoY growth compares 2017 with 2016. For the delivery metrics I left out cancelled orders, because they were never delivered.
 
 The dataset doesn't say which currency it uses. Most analyses of it treat the amounts as US dollars, so I do the same here.
 
@@ -28,7 +28,7 @@ Total sales are about $36.5M and profit is $3.93M, so the profit margin is 10.8%
 
 KPI cards, late delivery rate by market, on-time delivery by shipping mode, on-time delivery trend and orders by shipping mode. Filters: year, market, shipping mode.
 
-Only 45% of orders are delivered on time. The other 55% are late. Average delivery time is 3.5 days.
+Of the orders that were actually shipped, 43% arrived on time and 57% were late. Average delivery time is 3.5 days. Cancelled orders (2,769, or 4.4%) are left out of the on-time and late rates, because they were never delivered.
 
 ## What I found
 
@@ -38,40 +38,56 @@ Only 45% of orders are delivered on time. The other 55% are late. Average delive
 
 **Monthly sales and profit go up and down, but there is no big fall over the period.** So the -4.0% is a slow decline, not a crash.
 
-**High sales don't always mean high profit.** Some categories sell a lot but have average or lower margins. That's why I compared categories on both sales and profit, not revenue only.
+**Eight categories make 86% of sales, and their margins are almost the same.** Fishing alone is 19% of sales ($6.93M). The top eight are Fishing, Cleats, Camping & Hiking, Cardio Equipment, Women's Apparel, Water Sports, Men's Footwear and Indoor/Outdoor Games, and their margins are all between 10.4% and 11.2% (the overall margin is 10.8%). So profit depends mostly on how much these categories sell, not on which categories the company sells.
 
-**Late delivery is the biggest operational problem, and it's the same everywhere.** The late rate in every market is between 54.4% and 55.2%. The gap is less than one percentage point, so this is probably a problem in the whole fulfilment process, not in one region. The on-time rate also stays around 45% for the whole period and doesn't improve.
+The biggest differences in margin are in small categories with under $100K in sales. The highest are Sporting Goods (17.7%) and Golf Bags & Carts (17.5%). The lowest are Strength Training (0.6%) and As Seen on TV! (3.5%). No category has a negative margin.
+
+**Late delivery is the biggest operational problem, and it's the same everywhere.** The late rate in every market is between 56.8% (Africa) and 57.7% (Europe). The gap is less than one percentage point, so the cause is not in one region. The on-time rate also stays around 40–45% for the whole period and doesn't improve.
 
 **Shipping mode makes the biggest difference:**
 
-| Shipping mode | On-time delivery | Orders |
-|---|---:|---:|
-| Standard Class | 62% | 38,094 |
-| Same Day | 54% | 3,451 |
-| Second Class | 23% | 12,333 |
-| First Class | 5% | 9,751 |
+| Shipping mode | Orders | Promised (days) | Actual (avg days) | On time |
+|---|---:|---:|---:|---:|
+| Standard Class | 38,094 | 4 | about 4 | 60% |
+| Same Day | 3,451 | 0 | under 0.5 | 52% |
+| Second Class | 12,333 | 2 | about 4 | 20% |
+| First Class | 9,751 | 1 | 2 | 0% |
 
-This surprised me the most. First Class should be the faster option, but only 5% of these orders arrive on time. Standard Class has the most orders and still the best result, so order volume alone doesn't explain the delays.
+## Why First Class is never on time
+
+This was the most surprising part, so I checked it in more detail.
+
+First Class promises delivery in 1 day, but the average actual delivery time is exactly 2 days, and not one of the 9,281 delivered First Class orders arrived on time. Second Class has a similar problem: it promises 2 days and takes about 4. Standard Class promises 4 days and takes about 4, and it has the best result even though it handles the most orders.
+
+So the delays don't come from too many orders or from one market. The faster shipping modes promise a delivery time that the logistics can't meet.
+
+My first version of the dashboard showed 5% on-time delivery for First Class. When I split the orders by `Delivery Status`, I saw that this 5% was exactly the cancelled orders (470 of 9,751). The `Late_delivery_risk` column marks cancelled orders as "not late", so my on-time metric counted them as delivered on time. I changed the calculated fields so cancelled orders are excluded. This moved the overall on-time rate from 45% to 43% and First Class from 5% to 0%.
 
 ## What I would recommend
 
-1. Look into First Class first. Maybe the promised delivery time is unrealistic, or the problem is in the warehouse, the carrier or route planning. The data shows the result, not the cause, so this needs checking with the operations team.
-2. Find out what works in Standard Class and try to apply it to First Class and Second Class.
+1. Change the promised delivery time for First Class and Second Class to what the logistics can really do (2 and about 4 days), or make the actual delivery faster. Right now every First Class customer gets a promise that is broken.
+2. Use Standard Class as the benchmark: its promise matches the real delivery time, and that's why it performs best.
 3. Treat delivery as a company-wide issue. Since all markets have almost the same late rate, fixing one region won't help much.
-4. Set a target for on-time delivery and track it by shipping mode. 45% is the starting point.
+4. Set a target for on-time delivery and track it by shipping mode. 43% is the starting point.
 5. Follow sales by market and category every month to see if the -4.0% is a short dip or a longer trend.
-6. Check pricing, discounts and costs in the categories with high sales and low margins.
+6. Focus growth on the big categories (Fishing, Cleats, Camping & Hiking), because their margin is stable. Check pricing in Strength Training (0.6% margin) and As Seen on TV! (3.5%), but these are small and won't change the total much.
 
 ## Calculated fields
 
-On-time and late delivery are based on the `Late_delivery_risk` column. The average of each field gives a percentage.
+On-time and late delivery are based on the `Late_delivery_risk` column. Cancelled orders get NULL, so they are not counted. The average of each field gives a percentage.
 
 ```
 // On-Time Delivery
-IF [Late_delivery_risk] = 0 THEN 1 ELSE 0 END
+IF [Delivery Status] = "Shipping canceled" THEN NULL
+ELSEIF [Late_delivery_risk] = 0 THEN 1
+ELSE 0
+END
 
 // Late Delivery
-IF [Late_delivery_risk] = 1 THEN 1 ELSE 0 END
+IF [Delivery Status] = "Shipping canceled" THEN NULL
+ELSEIF [Late_delivery_risk] = 1 THEN 1
+ELSE 0
+END
 
 // Profit Margin
 SUM([Benefit per order]) / SUM([Sales])
@@ -83,4 +99,20 @@ SUM([Sales]) / COUNTD([Order Id])
 (SUM([Sales]) - LOOKUP(SUM([Sales]), -1)) / ABS(LOOKUP(SUM([Sales]), -1))
 
 // Category Performance (10.8% is the overall margin)
-IF
+IF [Profit Margin] >= 0.108 THEN "Above Avg Margin" ELSE "Below Avg Margin" END
+```
+
+## Tools
+
+Tableau: calculated fields, table calculations (LOOKUP for YoY), interactive filters, dashboard layout, checking a metric against the raw status field.
+
+## Files
+
+```
+Supply-Chain-Performance-Analysis/
+├── README.md
+├── Supply Chain Performance Analysis_.twbx
+├── executive overview.png
+└── delivery-operations.png
+```
+
