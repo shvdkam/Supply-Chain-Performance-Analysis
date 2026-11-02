@@ -12,7 +12,7 @@ I loaded the data into Tableau from an Excel file and used orders from 2015 to 2
 
 The dataset doesn't say which currency it uses. Most analyses of it treat the amounts as US dollars, so I do the same here.
 
-The Tableau workbook is also in this repo: [Supply Chain Performance Analysis_.twbx](Supply%20Chain%20Performance%20Analysis_.twbx). Download it and open it in Tableau Public or Tableau Desktop to use the filters and see the calculated fields.
+The Tableau workbook is also in this repo: [Supply Chain Performance Analysis.twbx](Supply%20Chain%20Performance%20Analysis.twbx). Download it and open it in Tableau Public or Tableau Desktop to use the filters and see the calculated fields.
 
 ## Dashboard 1: Executive Overview
 
@@ -111,8 +111,8 @@ Tableau: calculated fields, table calculations (LOOKUP for YoY), interactive fil
 ```
 Supply-Chain-Performance-Analysis/
 ├── README.md
-├── Supply Chain Performance Analysis_.twbx
-├── executive overview.png
-└── delivery-operations.png
+├── Supply Chain Performance Analysis.twbx
+├── executive_overview.png
+└── delivery_operations.png
 ```
 
