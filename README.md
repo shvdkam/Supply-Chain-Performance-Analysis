@@ -16,7 +16,7 @@ The Tableau workbook is also in this repo: [Supply Chain Performance Analysis_.t
 
 ## Dashboard 1: Executive Overview
 
-![Executive Overview dashboard](executive%20overview.png)
+![Executive Overview dashboard](executive_overview.png)
 
 KPI cards, monthly sales and profit trend, category portfolio (sales vs profit margin) and sales contribution by market. Filters: year, market, category.
 
@@ -24,7 +24,7 @@ Total sales are about $36.5M and profit is $3.93M, so the profit margin is 10.8%
 
 ## Dashboard 2: Delivery & Operations Performance
 
-![Delivery and Operations dashboard](delivery-operations.png)
+![Delivery and Operations dashboard](delivery_operations.png)
 
 KPI cards, late delivery rate by market, on-time delivery by shipping mode, on-time delivery trend and orders by shipping mode. Filters: year, market, shipping mode.
 
