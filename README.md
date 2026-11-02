@@ -1,404 +1,102 @@
-# Supply Chain Performance Analysis
+# Supply chain performance analysis (Tableau)
 
-**Tableau | Supply Chain Analytics | Business Intelligence**
+In this project I looked at a supply chain dataset from two sides: money (sales, profit, markets, categories) and delivery (how many orders arrive on time and what affects it). I built two Tableau dashboards and wrote down what I found and what I would recommend to the company.
 
-This project analyzes supply chain performance with a focus on sales, profitability, market contribution, order volume, and delivery efficiency.
+## Data
 
-The goal was to build an interactive Tableau solution that connects financial performance with operational efficiency and helps identify areas that may require management attention.
+Dataset: DataCo Smart Supply Chain for Big Data Analysis, downloaded from Kaggle. Original source: Constante, F., Silva, F., Pereira, A. (2019), Mendeley Data, https://doi.org/10.17632/8gx2fvg2k6.5 (licence CC BY 4.0).
 
-The project contains two dashboards:
+I used orders from 2015 to 2017, so every year in the analysis is a full year and the YoY growth compares 2017 with 2016.
 
-- **Executive Overview** — financial and commercial performance
-- **Delivery & Operations Performance** — delivery efficiency and operational performance
+The dataset doesn't say which currency it uses. Most analyses of it treat the amounts as US dollars, so I do the same here.
 
----
+The workbook is in the repo: [Supply Chain Performance Analysis.twbx](Supply%20Chain%20Performance%20Analysis.twbx). Download it and open it in Tableau to use the filters and see the calculated fields.
 
-# Dashboards
-
-## 1. Executive Overview
+## Dashboard 1: Executive overview
 
 ![Executive Overview](executive-overview.png)
 
-The Executive Overview provides a high-level view of the company's financial and commercial performance.
+Filters: year, market, category.
 
-### Key KPIs
+Total sales are about $36.5M and profit is $3.93M, so the profit margin is 10.8%. There are 63.6K orders and the average order value is $573. The latest year-over-year sales growth is -4.0%.
 
-| KPI | Result |
-|---|---:|
-| Total Sales | 36.5M zł |
-| Sales YoY Growth | -4.0% |
-| Total Profit | 3.93M zł |
-| Profit Margin | 10.8% |
-| Total Orders | 63.6K |
-| Average Order Value | 573 zł |
+## Dashboard 2: Delivery and operations
 
-The dashboard helps answer several important business questions:
+![Delivery and Operations](delivery-operations.png)
 
-- How are sales and profit performing?
-- Is the business growing or declining?
-- Which markets contribute the most to total sales?
-- How do product categories compare in terms of sales and profitability?
-- How do sales and profit change over time?
+Filters: year, market, shipping mode.
 
-The dashboard can be filtered by **Year, Market, and Category**.
+Only 45% of orders are delivered on time. The other 55% are late. Average delivery time is 3.5 days.
 
----
+## What I found
 
-## 2. Delivery & Operations Performance
+**The company makes a profit, but sales went down.** A 10.8% margin is fine, but -4.0% YoY growth is worth watching. If the trend continues, profit will drop too.
 
-![Delivery & Operations Performance](delivery-operations.png)
+**Two markets bring most of the money.** Europe has 29.83% of sales and LATAM 28.19%, together about 58%. Pacific Asia has 21.79%, USCA 13.90% and Africa 6.29%.
 
-The second dashboard focuses on delivery performance and operational efficiency.
+**Monthly sales and profit go up and down, but there is no big fall over the period.** So the -4.0% is a slow decline, not a crash.
 
-### Key KPIs
+**High sales don't always mean high profit.** Some categories sell a lot but have average or lower margins. That's why I compared categories on both sales and profit, not revenue only.
 
-| KPI | Result |
-|---|---:|
-| On-Time Delivery | 45% |
-| Late Delivery Rate | 55% |
-| Average Delivery Time | 3.5 days |
-| Total Orders | 63.6K |
+**Late delivery is the biggest operational problem, and it's the same everywhere.** The late rate in every market is between 54.4% and 55.2%. The gap is less than one percentage point, so this is probably a problem in the whole fulfilment process, not in one region. The on-time rate also stays around 45% for the whole period and doesn't improve.
 
-The dashboard helps analyze:
+**Shipping mode makes the biggest difference:**
 
-- late delivery rates across markets;
-- on-time delivery performance by shipping mode;
-- changes in delivery performance over time;
-- order volume by shipping mode.
+| Shipping mode | On-time delivery | Orders |
+|---|---:|---:|
+| Standard Class | 62% | 38,094 |
+| Same Day | 54% | 3,451 |
+| Second Class | 23% | 12,333 |
+| First Class | 5% | 9,751 |
 
-The dashboard can be filtered by **Year, Market, and Shipping Mode**.
+This surprised me the most. First Class should be the faster option, but only 5% of these orders arrive on time. Standard Class has the most orders and still the best result, so order volume alone doesn't explain the delays.
 
----
+## What I would recommend
 
-# Tableau Workbook
+1. Look into First Class first. Maybe the promised delivery time is unrealistic, or the problem is in the warehouse, the carrier or route planning. The data shows the result, not the cause, so this needs checking with the operations team.
+2. Find out what works in Standard Class and try to apply it to First Class and Second Class.
+3. Treat delivery as a company-wide issue. Since all markets have almost the same late rate, fixing one region won't help much.
+4. Set a target for on-time delivery and track it by shipping mode. 45% is the starting point.
+5. Follow sales by market and category every month to see if the -4.0% is a short dip or a longer trend.
+6. Check pricing, discounts and costs in the categories with high sales and low margins.
 
-The complete Tableau workbook is included in this repository.
+## Calculated fields
 
-**File:** [Supply Chain Performance Analysis.twbx](Supply%20Chain%20Performance%20Analysis.twbx)
+On-time and late delivery are based on the `Late_delivery_risk` column. The average of each field gives a percentage.
 
-Download and open the workbook in Tableau to explore the complete project, including dashboards, interactive filters, calculated fields, and individual worksheets.
+```
+// On-Time Delivery
+IF [Late_delivery_risk] = 0 THEN 1 ELSE 0 END
 
----
+// Late Delivery
+IF [Late_delivery_risk] = 1 THEN 1 ELSE 0 END
 
-# Key Findings
+// Profit Margin
+SUM([Benefit per order]) / SUM([Sales])
 
-## 1. The company is profitable, but sales growth is negative
+// Average Order Value
+SUM([Sales]) / COUNTD([Order Id])
 
-The company generated approximately **36.5M zł in total sales** and **3.93M zł in profit**, resulting in an overall **10.8% profit margin**.
+// Sales YoY Growth
+(SUM([Sales]) - LOOKUP(SUM([Sales]), -1)) / ABS(LOOKUP(SUM([Sales]), -1))
 
-However, the latest Sales YoY Growth is **-4.0%**.
-
-This suggests that the company remains profitable, but the decline in sales should be monitored. If the trend continues, it may eventually affect overall profitability.
-
----
-
-## 2. Europe and LATAM are the largest markets
-
-Europe represents approximately **29.83% of total sales**, making it the largest market in the dataset.
-
-LATAM follows closely with **28.19%**.
-
-| Market | Sales Contribution |
-|---|---:|
-| Europe | 29.83% |
-| LATAM | 28.19% |
-| Pacific Asia | 21.79% |
-| USCA | 13.90% |
-| Africa | 6.29% |
-
-Together, Europe and LATAM account for approximately **58% of total sales**.
-
-This makes these two markets particularly important for the company's overall performance.
-
----
-
-## 3. Sales and profit remain relatively stable over time
-
-Monthly sales and profit fluctuate throughout the analyzed period, with several temporary peaks and declines.
-
-There is no dramatic long-term collapse in performance.
-
-However, the negative YoY sales growth indicates that the overall sales direction should continue to be monitored.
-
----
-
-## 4. Category profitability varies
-
-The category portfolio analysis shows that similar sales levels do not always generate similar profit margins.
-
-Some categories generate significant sales while remaining around or below the average profitability level.
-
-This shows why categories should be evaluated using both **sales and profitability**, rather than revenue alone.
-
----
-
-# Delivery & Operations Findings
-
-## 5. Delivery delays are the main operational issue
-
-Only **45% of orders are delivered on time**, while approximately **55% are delivered late**.
-
-This means that more than half of all deliveries fail to meet the expected delivery time.
-
-A high late delivery rate may negatively affect customer satisfaction, customer retention, operational costs, and the overall customer experience.
-
----
-
-## 6. Delivery problems exist across all markets
-
-Late delivery rates are very similar across the analyzed markets.
-
-| Market | Late Delivery Rate |
-|---|---:|
-| Europe | 55.2% |
-| Pacific Asia | 55.0% |
-| USCA | 54.8% |
-| Africa | 54.6% |
-| LATAM | 54.4% |
-
-The difference between the highest and lowest market is less than one percentage point.
-
-This suggests that delivery delays are not isolated to one specific market.
-
-Instead, the issue appears to be connected with broader operational or supply chain processes.
-
----
-
-## 7. Shipping mode has a major impact on delivery performance
-
-Delivery performance varies significantly depending on the shipping mode.
-
-| Shipping Mode | On-Time Delivery |
-|---|---:|
-| Standard Class | 62% |
-| Same Day | 54% |
-| Second Class | 23% |
-| First Class | 5% |
-
-**Standard Class performs best**, while **First Class has the weakest on-time delivery performance**.
-
-The extremely low performance of First Class is particularly interesting because it is expected to represent a faster delivery option.
-
-This suggests that faster shipping does not necessarily result in more reliable delivery.
-
----
-
-## 8. Standard Class handles most orders
-
-Standard Class accounts for the largest share of order volume.
-
-| Shipping Mode | Orders |
-|---|---:|
-| Standard Class | 38,094 |
-| Second Class | 12,333 |
-| First Class | 9,751 |
-| Same Day | 3,451 |
-
-Standard Class handles significantly more orders than any other shipping mode while also achieving the strongest on-time delivery performance.
-
-This suggests that high order volume itself is probably not the main reason for delivery delays.
-
----
-
-## 9. Delivery performance has not improved significantly over time
-
-The on-time delivery rate remains relatively stable throughout the analyzed period, generally staying around the mid-40% range.
-
-There are short-term fluctuations, but no clear sustained improvement.
-
-This suggests that delivery delays represent a persistent operational problem rather than a temporary issue.
-
----
-
-# Business Recommendations
-
-Based on the analysis, I would focus on the following areas.
-
-## 1. Investigate First Class delivery performance
-
-First Class has only a **5% on-time delivery rate**, making it the weakest shipping mode by a significant margin.
-
-The company should investigate whether this is connected with:
-
-- unrealistic promised delivery times;
-- warehouse processing delays;
-- carrier performance;
-- fulfillment capacity;
-- transportation or route planning.
-
----
-
-## 2. Use Standard Class as a benchmark
-
-Standard Class combines the **highest order volume** with the **strongest on-time delivery performance**.
-
-Understanding what works well in this process could help identify improvements for First Class and Second Class.
-
----
-
-## 3. Treat delivery performance as a company-wide issue
-
-Late delivery rates are almost identical across markets.
-
-Instead of focusing only on individual geographical regions, the company should review the overall fulfillment and logistics process.
-
----
-
-## 4. Monitor negative sales growth
-
-The company remains profitable, but the latest YoY sales growth is **-4.0%**.
-
-Management should monitor sales performance by market and category to understand whether the decline is temporary or part of a longer trend.
-
----
-
-## 5. Review category profitability
-
-High sales do not always result in high profit margins.
-
-Categories with strong sales but weaker profitability should be reviewed for possible improvements in:
-
-- pricing;
-- discounts;
-- product mix;
-- operational costs.
-
----
-
-## 6. Set clear delivery performance targets
-
-The current **45% on-time delivery rate** provides a clear baseline.
-
-The company could establish a target for improving this KPI and continue monitoring performance by shipping mode over time.
-
----
-
-# Overall Conclusion
-
-The analysis shows a company that generates significant sales and remains profitable, but also faces several areas that require attention.
-
-From a financial perspective, the business generated **36.5M zł in sales** with a **10.8% profit margin**. However, the negative **-4.0% YoY sales growth** may become a risk if the trend continues.
-
-From an operational perspective, delivery performance represents the biggest concern. More than half of all orders are delivered late, and this problem appears across all markets.
-
-Shipping mode has a much stronger relationship with delivery performance. Standard Class performs relatively well despite handling the largest number of orders, while First Class and Second Class show significantly weaker results.
-
-Overall, the dashboards connect **financial performance with operational efficiency** and help identify areas where the company could improve both profitability and customer experience.
-
----
-
-# Calculated Metrics
-
-Several calculated fields were created in Tableau to support the analysis.
-
-## On-Time Delivery
-
-```text
-IF [Late_delivery_risk] = 0 THEN
-    1
-ELSE
-    0
-END
+// Category Performance (10.8% is the overall margin)
+IF [Profit Margin] >= 0.108 THEN "Above Avg Margin" ELSE "Below Avg Margin" END
 ```
 
-The average of this calculated field represents the percentage of orders delivered on time.
+## Tools
 
----
+Tableau: calculated fields, table calculations (LOOKUP for YoY), interactive filters, dashboard layout.
 
-## Late Delivery
+## Files
 
-```text
-IF [Late_delivery_risk] = 1 THEN
-    1
-ELSE
-    0
-END
 ```
-
-The average of this calculated field represents the late delivery rate.
-
----
-
-## Profit Margin
-
-```text
-SUM([Profit]) / SUM([Sales])
-```
-
-This metric measures profit relative to total sales.
-
----
-
-## Sales YoY Growth
-
-```text
-(
-    SUM([Sales])
-    - LOOKUP(SUM([Sales]), -1)
-)
-/
-ABS(LOOKUP(SUM([Sales]), -1))
-```
-
-This calculation measures the year-over-year percentage change in sales.
-
----
-
-# Tools & Skills
-
-### Tools
-
-- Tableau
-- Tableau calculated fields
-- Interactive filters
-- Table calculations
-- Dashboard design
-
-### Analysis
-
-- KPI analysis
-- Sales analysis
-- Profitability analysis
-- Trend analysis
-- Market analysis
-- Category analysis
-- Supply chain analysis
-- Delivery performance analysis
-
-### Skills Demonstrated
-
-This project demonstrates my ability to:
-
-- transform business data into meaningful KPIs;
-- create calculated fields in Tableau;
-- design interactive dashboards;
-- analyze financial and operational performance;
-- identify patterns and potential business problems;
-- compare performance across different segments;
-- translate analytical findings into business recommendations;
-- communicate results through clear data visualizations.
-
----
-
-# Project Structure
-
-```text
 Supply-Chain-Performance-Analysis/
-│
 ├── README.md
 ├── Supply Chain Performance Analysis.twbx
 ├── executive-overview.png
 └── delivery-operations.png
 ```
 
----
 
-# About This Project
 
-This project was created as part of my **Data Analytics portfolio**.
-
-My goal was to practice the complete analytical process rather than only creating visualizations:
-
-**Business Question → KPI Selection → Data Visualization → Analysis → Business Recommendation**
-
-The project demonstrates how Tableau can be used to transform business and supply chain data into clear insights that can support decision-making.
