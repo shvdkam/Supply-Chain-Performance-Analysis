@@ -10,21 +10,21 @@ I used orders from 2015 to 2017, so every year in the analysis is a full year an
 
 The dataset doesn't say which currency it uses. Most analyses of it treat the amounts as US dollars, so I do the same here.
 
-The workbook is in the repo: [Supply Chain Performance Analysis.twbx](Supply%20Chain%20Performance%20Analysis.twbx). Download it and open it in Tableau to use the filters and see the calculated fields.
+The Tableau workbook is in this repo: [Supply Chain Performance Analysis_.twbx](Supply%20Chain%20Performance%20Analysis_.twbx). Download it and open it in Tableau Public or Tableau Desktop to use the filters and see the calculated fields.
 
-## Dashboard 1: Executive overview
+## Dashboard 1: Executive Overview
 
-![Executive Overview](executive-overview.png)
+![Executive Overview dashboard](executive%20overview.png)
 
-Filters: year, market, category.
+KPI cards, monthly sales and profit trend, category portfolio (sales vs profit margin) and sales contribution by market. Filters: year, market, category.
 
 Total sales are about $36.5M and profit is $3.93M, so the profit margin is 10.8%. There are 63.6K orders and the average order value is $573. The latest year-over-year sales growth is -4.0%.
 
-## Dashboard 2: Delivery and operations
+## Dashboard 2: Delivery & Operations Performance
 
-![Delivery and Operations](delivery-operations.png)
+![Delivery and Operations dashboard](delivery-operations.png)
 
-Filters: year, market, shipping mode.
+KPI cards, late delivery rate by market, on-time delivery by shipping mode, on-time delivery trend and orders by shipping mode. Filters: year, market, shipping mode.
 
 Only 45% of orders are delivered on time. The other 55% are late. Average delivery time is 3.5 days.
 
@@ -93,10 +93,7 @@ Tableau: calculated fields, table calculations (LOOKUP for YoY), interactive fil
 ```
 Supply-Chain-Performance-Analysis/
 ├── README.md
-├── Supply Chain Performance Analysis.twbx
-├── executive-overview.png
+├── Supply Chain Performance Analysis_.twbx
+├── executive overview.png
 └── delivery-operations.png
 ```
-
-
-
